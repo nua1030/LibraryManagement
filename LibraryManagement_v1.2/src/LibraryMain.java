@@ -51,7 +51,7 @@ public class LibraryMain {
             System.out.println("\n========= CSV 로그인 시스템 =========");
             System.out.print("아이디: ");
             String id = sc.nextLine().trim();
-
+            //이슈 3번 수정
             if (!id.isEmpty() && Character.isDigit(id.charAt(0))) {
                 System.out.println("다시 입력하세요");
                 continue;
@@ -64,6 +64,7 @@ public class LibraryMain {
             System.out.println("[오류] 아이디 또는 비밀번호가 틀렸습니다.");
         }
     }
+
 
     /**
      * 입력된 선택 번호와 사용자 권한에 따라 적절한 UI 기능을 호출합니다.
