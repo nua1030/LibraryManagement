@@ -50,7 +50,13 @@ public class LibraryMain {
         while (true) {
             System.out.println("\n========= CSV 로그인 시스템 =========");
             System.out.print("아이디: ");
-            String id = sc.nextLine();
+            String id = sc.nextLine().trim();
+
+            if (!id.isEmpty() && Character.isDigit(id.charAt(0))) {
+                System.out.println("다시 입력하세요");
+                continue;
+            }
+
             System.out.print("비밀번호: ");
             String pw = sc.nextLine();
 
