@@ -50,15 +50,19 @@ public class LibraryMain {
         while (true) {
             System.out.println("\n========= CSV 로그인 시스템 =========");
             System.out.print("아이디: ");
-            String id = sc.nextLine().trim();
-            //이슈 3번 수정
-            if (!id.isEmpty() && Character.isDigit(id.charAt(0))) {
-                System.out.println("다시 입력하세요");
-                continue;
-            }
-
+            String id = sc.nextLine();
             System.out.print("비밀번호: ");
-            String pw = sc.nextLine();
+            String pw = "";
+
+            // System.console()은 이클립스/IntelliJ 내장 콘솔에서는 null을 반환할 수 있으므로 방어 코드를 작성한다
+            if (System.console() != null) {
+                // readPassword()는 입력받는 글자를 화면에 마스킹하거나 표시하지 않는다
+                char[] passwordChars = System.console().readPassword();
+                pw = new String(passwordChars);
+            } else {
+                // IDE(이클립스 등) 내부 개발 환경을 위한 백업 코드 (이때는 어쩔 수 없이 노출됨)
+                pw = sc.nextLine();
+            }
 
             if (manager.login(id, pw)) return true;
             System.out.println("[오류] 아이디 또는 비밀번호가 틀렸습니다.");
@@ -100,15 +104,22 @@ public class LibraryMain {
      * @see <a href="https://github.com/sumannam/Java/issues/22">Issue #22: 종료 시 데이터 누락 방지</a>
      */
     private static void handleExit() {
-        System.out.print("정말로 종료하시겠습니까? [Y/n]: ");
-        if (sc.nextLine().equalsIgnoreCase("y")) {
-            manager.saveChanges();
-            System.out.println("데이터 저장 완료. 감사합니다.");
-            System.exit(0);
+        while (true) {
+            System.out.print("정말로 종료하시겠습니까? [Y/n]: ");
+            String input = sc.nextLine().trim();
+            if (input.isEmpty() || input.equalsIgnoreCase("y")) {
+                manager.saveChanges();
+                System.out.println("데이터 저장 완료. 감사합니다.");
+                System.exit(0);
+            } else if (input.equalsIgnoreCase("n")) {
+                System.out.println("종료를 취소했습니다.");
+                return;
+            } else {
+                System.out.println("[오류] 'Y' 또는 'N' 중 하나를 입력해주세요.");
+            }
         }
     }
 
-    // (나머지 UI 메서드들: listBooks, borrowBook 등 기존 코드와 거의 동일하게 구현)
     private static void showAdminMenu() {
         System.out.println("===========================================================");
         System.out.println("          [ 관리자 전용 메뉴 ]");
