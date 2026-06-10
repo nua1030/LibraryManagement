@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -20,9 +21,20 @@ class LibraryMainTest {
     void tearDown() {
         if (originalIn != null) {
             System.setIn(originalIn);
+            setScanner(new Scanner(originalIn));
         }
         if (originalOut != null) {
             System.setOut(originalOut);
+        }
+    }
+
+    private void setScanner(Scanner scanner) {
+        try {
+            Field scField = LibraryMain.class.getDeclaredField("sc");
+            scField.setAccessible(true);
+            scField.set(null, scanner);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -36,6 +48,7 @@ class LibraryMainTest {
         ByteArrayOutputStream testOut = new ByteArrayOutputStream();
 
         System.setIn(testIn);
+        setScanner(new Scanner(testIn));
         System.setOut(new PrintStream(testOut));
 
         Field managerField = LibraryMain.class.getDeclaredField("manager");
@@ -65,6 +78,7 @@ class LibraryMainTest {
         ByteArrayOutputStream testOut = new ByteArrayOutputStream();
 
         System.setIn(testIn);
+        setScanner(new Scanner(testIn));
         System.setOut(new PrintStream(testOut));
 
         Field managerField = LibraryMain.class.getDeclaredField("manager");
