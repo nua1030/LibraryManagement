@@ -70,6 +70,7 @@ public class LibraryMain {
 
             if (manager.login(id, pw)) return true;
             System.out.println("[오류] 아이디 또는 비밀번호가 틀렸습니다.");
+            System.out.println(" 종료를 원할 시, exit를 입력해주세요");
         }
     }
 
