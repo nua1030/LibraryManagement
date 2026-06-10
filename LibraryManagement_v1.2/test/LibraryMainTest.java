@@ -10,6 +10,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class LibraryMainTest {
     private InputStream originalIn;
@@ -52,5 +53,30 @@ class LibraryMainTest {
         String output = testOut.toString();
         assertTrue(output.contains("[오류] 'Y' 또는 'N' 중 하나를 입력해주세요."));
         assertTrue(output.contains("종료를 취소했습니다."));
+    }
+
+    @Test
+    @DisplayName("로그인 화면에서 종료 입력 시 빠져나오기")
+    void performLogin_returnsFalseWhenQuitTokenEntered() throws Exception {
+        originalIn = System.in;
+        originalOut = System.out;
+
+        ByteArrayInputStream testIn = new ByteArrayInputStream("q\n".getBytes());
+        ByteArrayOutputStream testOut = new ByteArrayOutputStream();
+
+        System.setIn(testIn);
+        System.setOut(new PrintStream(testOut));
+
+        Field managerField = LibraryMain.class.getDeclaredField("manager");
+        managerField.setAccessible(true);
+        managerField.set(null, new LibraryManager(new LibraryRepository()));
+
+        Method performLogin = LibraryMain.class.getDeclaredMethod("performLogin");
+        performLogin.setAccessible(true);
+        boolean result = (boolean) performLogin.invoke(null);
+
+        String output = testOut.toString();
+        assertFalse(result);
+        assertTrue(output.contains("로그인을 종료합니다."));
     }
 }

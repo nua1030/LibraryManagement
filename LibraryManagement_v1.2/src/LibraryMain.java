@@ -51,6 +51,10 @@ public class LibraryMain {
             System.out.println("\n========= CSV 로그인 시스템 =========");
             System.out.print("아이디: ");
             String id = sc.nextLine();
+            if (id.equalsIgnoreCase("q") || id.equalsIgnoreCase("exit") || id.equals("0")) {
+                System.out.println("로그인을 종료합니다.");
+                return false;
+            }
             System.out.print("비밀번호: ");
             String pw = "";
 
